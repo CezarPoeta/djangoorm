@@ -22,12 +22,14 @@ class Montadora(models.Model):
     def __str__(self):
         return self.nome
 
+def set_default_montadora():
+    return Montadora.objects.get_or_create(nome='Padrão')[0]  #(objeto, boolean)
 
 class Carro(models.Model):
     #OneToOne Um chassi apenas um carro
     chassi = models.OneToOneField(Chassi, on_delete=models.CASCADE)
     #OneToMany Um carro apenas uma montadora, mas uma montadora n carros
-    montadora = models.ForeignKey(Montadora, on_delete=models.CASCADE)
+    montadora = models.ForeignKey(Montadora, on_delete=models.SET(set_default_montadora))
     #ManyToMany 1 carro Muitos motoristas 1 Motorista Muitos Carros
     motoristas = models.ManyToManyField(get_user_model())
     modelo = models.CharField('Modelo', max_length=30, help_text='Informe Máximo 30 caracteres')
